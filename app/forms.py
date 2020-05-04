@@ -7,13 +7,6 @@ nullmsg = "This field is required"
 
 class UploadForm(FlaskForm):
     """ Form for file upload """
-    description = TextAreaField(
-        label="Description", 
-        validators=[
-            DataRequired(message=nullmsg),
-        ]
-    )
-
     photo = FileField(
         label="Upload Picture", 
         validators=[ 
@@ -23,3 +16,12 @@ class UploadForm(FlaskForm):
             )
         ]
     )
+    
+    description = TextAreaField(
+        label="Description", 
+        validators=[
+            DataRequired(message=nullmsg),
+        ]
+    )
+
+    
