@@ -55,36 +55,52 @@ const NotFound = Vue.component('not-found', {
 const UploadForm = Vue.component('upload-form', {
     template: `
     <div>
-        <form @submit.prevent="uploadPhoto" id="uploadForm">
-            <div>
-                <label for="photo">Choose photo</label><br>
-                <input type="file" name="photo" id="photo">
+        <div id="feedback" style="height:5em; margin-bottom: 2em;">
+            <div  v-if="success" class="alert alert-success">
+                {{ success }}
             </div>
-            <div style="margin-top: 2em;">
+            <div v-if="errors" class="alert alert-danger">
+                <ul>
+                    <li v-for="(error, index) in errors" :key="index">{{error}}</li>
+                </ul>
+            </div>
+        </div>
+        <form @submit.prevent="uploadPhoto" id="uploadForm">
+            <div class="form-group">
+                <label for="photo">Choose photo</label><br>
+                <input type="file" name="photo" id="photo" class="form-control-file">
+            </div>
+            <div style="margin-top: 2em;" class="form-group">
                 <label for="description">Photo description</label><br>
                 <textarea 
                     name="description"
                     id="description" 
                     cols="30" rows="10" 
                     form="uploadForm"
-                    placeholder="Enter photo description..."></textarea>
+                    placeholder="Enter photo description..."
+                    class="form-control"></textarea>
             </div>
 
-            <div><input type="submit"></input></div>
+            <div class="form-group"><input type="submit"></input></div>
         </form>
     </div>
     `,
     data: function() {
         return {
-            data: null
+            errors: null,
+            success: null
         }
     },
     methods: {
         uploadPhoto: function() {
+            // reset feedback variables
+            this.errors = null
+            this.success = null
+
             // retrieve form
             let uploadForm = document.getElementById('uploadForm');
             let form_data = new FormData(uploadForm);
-            console.log(form_data)
+            // console.log(form_data)
 
             // send api request
             fetch('api/upload', {
@@ -96,20 +112,21 @@ const UploadForm = Vue.component('upload-form', {
                 credentials: 'same-origin'
             })
             .then((response) => {
-                // let data = response.json()
-                // console.log(data)
                 return response.json()
             })
             .then((jsonResponse) => {
                 // display success
-                console.log(jsonResponse)
+                // console.log(jsonResponse)
                 if(jsonResponse.message) {
-                    alert(jsonResponse.message)
+                    this.success = jsonResponse.message
+                    // alert(jsonResponse.message)
                 } else {
-                    console.log("ERROR")
+                    this.errors = jsonResponse.errors
+                    // console.log("ERROR")
                 }
             })
             .catch((error) => {
+                this.errors = ["Internal system error. Please try later"]
                 console.log(error)
             });
         },

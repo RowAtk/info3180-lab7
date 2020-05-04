@@ -5,6 +5,9 @@ Thumbs.db
 *.py[cod]
 *$py.class
 
+#upload files
+uploads/
+
 # virtualenv
 .venv/
 venv/

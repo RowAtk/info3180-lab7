@@ -10,13 +10,14 @@ class UploadForm(FlaskForm):
     photo = FileField(
         label="Upload Picture", 
         validators=[ 
+            FileRequired(),
             FileAllowed(
                 ['jpg', 'png', 'jpeg'], 
                 message="Image Files Only"
-            )
+            ) 
         ]
     )
-    
+
     description = TextAreaField(
         label="Description", 
         validators=[
