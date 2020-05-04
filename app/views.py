@@ -18,10 +18,13 @@ success = "File uploaded successfully"
 ###
 @app.route('/api/upload', methods=['POST'])
 def upload():
+    # print(jsonify(hello="Rowan"))
     form = UploadForm()
+    print(form.description)
     if form.validate_on_submit():
         photo = form.photo.data
-        description = form.photo.description
+        print("PHOTO", photo)
+        description = form.description.data
         if photo:
             filename = secure_filename(photo.filename)
             photo.save(os.path.join(
@@ -29,9 +32,12 @@ def upload():
             ))
             # success
             return jsonify(message=success, filename=filename, description=description)
-
+        else:
+            return jsonify(errors="failure in retrieving photo")
     # error
-    return jsonify(errors=form_errors(form))
+    error_response = jsonify(errors=form_errors(form))
+    print(error_response)
+    return error_response
 
 
 
